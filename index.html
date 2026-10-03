@@ -262,23 +262,9 @@ footer{padding:28px 0 44px;color:var(--muted);font:400 .82rem "IBM Plex Mono",mo
 </div></section>
 <section id="lab"><div class="wrap">
   <h2>Detection lab network</h2>
-  <p class="sub">The design of my SOC lab: an attacker, a target that logs everything, and a SIEM that raises the alert. Run the attack to see how the evidence flows. This is an illustrative simulation, not live data.</p>
+  <p class="sub">The design of my SOC lab: an attacker, a target that logs everything, and a SIEM that raises the alert. Drag to rotate, then run the attack to see how the evidence flows. This is an illustrative simulation, not live data.</p>
   <div class="netbox">
-    <svg id="net" viewBox="0 0 780 340" role="img" aria-label="Network diagram: Kali attacker connects through a switch to an Ubuntu SSH target, which forwards logs to a Wazuh server that alerts an analyst">
-      <g id="edges"></g>
-      <g class="net-node atk"><rect x="30" y="140" width="130" height="60" rx="8"/><text x="95" y="167">Kali Linux</text><text class="s" x="95" y="184">attacker</text></g>
-      <g class="net-node"><rect x="225" y="140" width="130" height="60" rx="8"/><text x="290" y="167">Lab network</text><text class="s" x="290" y="184">virtual switch</text></g>
-      <g class="net-node tgt" id="n-ubu"><rect x="455" y="60" width="140" height="60" rx="8"/><text x="525" y="87">Ubuntu server</text><text class="s" x="525" y="104">SSH target + agent</text></g>
-      <g class="net-node siem" id="n-waz"><rect x="455" y="220" width="140" height="60" rx="8"/><text x="525" y="247">Wazuh</text><text class="s" x="525" y="264">log analysis, rules</text></g>
-      <g class="net-node"><rect x="640" y="220" width="115" height="60" rx="8"/><text x="697" y="247">Analyst</text><text class="s" x="697" y="264">triage, report</text></g>
-      <g id="pkts"></g>
-    </svg>
-    <div class="net-ctl">
-      <button id="run" type="button">Run SSH brute-force attack</button>
-      <button id="reset" type="button" class="alt">Reset</button>
-      <div class="net-stat" id="stat" aria-live="polite">Idle. The Ubuntu server forwards routine logs to Wazuh.</div>
-    </div>
-    <div class="legend"><span><i style="background:var(--signal)"></i>Normal logs</span><span><i style="background:var(--crit)"></i>Attack traffic and alerts</span><span><i style="background:var(--amber)"></i>Suspicious log events</span></div>
+    <iframe src="soc-lab-3d.html" style="width:100%;height:520px;border:0;display:block" title="3D detection lab simulation: Kali attacks an Ubuntu SSH target, Wazuh raises an alert, the analyst triages" loading="lazy"></iframe>
   </div>
 </div></section>
 <section id="soc"><div class="wrap">
@@ -399,37 +385,6 @@ footer{padding:28px 0 44px;color:var(--muted);font:400 .82rem "IBM Plex Mono",mo
 </main>
 
 <footer><div class="wrap">Mansi Borade. London, UK.</div></footer>
-<script>
-(function(){
-var NS="http://www.w3.org/2000/svg",P={kali:[160,170],sw:[225,170],sw2:[355,170],ubu:[455,90],waz:[455,250],wazr:[595,250],ana:[640,250]};
-var E=[["kali","sw"],["sw2","ubu"],["ubu","waz"],["wazr","ana"]],edges=[];
-// edge 0 spans kali->switch->target: draw as two lines
-var lines=[[[160,170],[225,170]],[[355,170],[455,90]],[[525,120],[525,220]],[[595,250],[640,250]]];
-var eg=document.getElementById("edges"),pg=document.getElementById("pkts");
-lines.forEach(function(l){var e=document.createElementNS(NS,"line");e.setAttribute("x1",l[0][0]);e.setAttribute("y1",l[0][1]);e.setAttribute("x2",l[1][0]);e.setAttribute("y2",l[1][1]);e.setAttribute("class","net-edge");eg.appendChild(e);edges.push(e)});
-var kt=[[160,170],[225,170],[355,170],[455,90]];
-var routes={bad:kt,ok:[[525,120],[525,220]],alert:[[595,250],[640,250]]};
-var stat=document.getElementById("stat"),ubu=document.getElementById("n-ubu"),waz=document.getElementById("n-waz");
-var pk=[],attack=false,failed=0,alerted=false,last=0,sp1=0,sp2=0,reduce=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-function len(a,b){return Math.hypot(b[0]-a[0],b[1]-a[1])}
-function spawn(route,cls,cb){var c=document.createElementNS(NS,"circle");c.setAttribute("class","pk "+cls);c.setAttribute("r",cls=="alert"?7:5);pg.appendChild(c);var pts=routes[route],tot=0;for(var i=1;i<pts.length;i++)tot+=len(pts[i-1],pts[i]);pk.push({c:c,pts:pts,tot:tot,d:0,cb:cb})}
-function pos(p){var d=p.d;for(var i=1;i<p.pts.length;i++){var L=len(p.pts[i-1],p.pts[i]);if(d<=L){var t=d/L;return[p.pts[i-1][0]+(p.pts[i][0]-p.pts[i-1][0])*t,p.pts[i-1][1]+(p.pts[i][1]-p.pts[i-1][1])*t]}d-=L}return p.pts[p.pts.length-1]}
-function setText(){if(alerted)stat.textContent="High-severity alert in Wazuh: repeated failed SSH logins from one source. Analyst reviews the evidence.";else if(attack)stat.textContent="Kali is guessing SSH passwords. Failed logins logged: "+failed;else stat.textContent="Idle. The Ubuntu server forwards routine logs to Wazuh."}
-function finalState(){failed=12;alerted=true;edges[0].classList.add("hot");edges[1].classList.add("hot");ubu.classList.add("hot");waz.classList.add("alert");setText()}
-function frame(t){var dt=Math.min((t-last)/1000||0,.05);last=t;
- pk=pk.filter(function(p){p.d+=dt*(p.c.getAttribute("class").indexOf("bad")>-1?260:140);if(p.d>=p.tot){p.c.remove();if(p.cb)p.cb();return false}var q=pos(p);p.c.setAttribute("cx",q[0]);p.c.setAttribute("cy",q[1]);return true});
- sp1+=dt;sp2+=dt;
- if(attack){if(sp1>.28){sp1=0;spawn("bad","bad",function(){failed++;setText()})}
-  if(sp2>.7){sp2=0;spawn("ok","warn")}
-  if(failed>=8&&!alerted){alerted=true;waz.classList.add("alert");spawn("alert","alert");setText()}}
- else if(sp2>1.6){sp2=0;spawn("ok","ok")}
- requestAnimationFrame(frame)}
-document.getElementById("run").onclick=function(){reset(true);attack=true;edges[0].classList.add("hot");edges[1].classList.add("hot");ubu.classList.add("hot");if(reduce)finalState();else setText()};
-function reset(keep){attack=false;alerted=false;failed=0;pk.forEach(function(p){p.c.remove()});pk=[];edges.forEach(function(e){e.classList.remove("hot")});ubu.classList.remove("hot");waz.classList.remove("alert");if(!keep)setText()}
-document.getElementById("reset").onclick=function(){reset(false)};
-if(!reduce)requestAnimationFrame(frame);
-})();
-</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 (function(){
