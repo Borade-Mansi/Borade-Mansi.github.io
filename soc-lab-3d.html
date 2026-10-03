@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SOC detection lab (3D)</title>
+<style>
+:root{--bg:#f3f5f7;--fg:#14202b;--mut:#5b6b78;--line:#c9d3db;--btn:#14202b;--btnfg:#fff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1419;--fg:#e6edf3;--mut:#8b9bab;--line:#26323d;--btn:#e6edf3;--btnfg:#0e1419}}
+:root[data-theme="dark"]{--bg:#0e1419;--fg:#e6edf3;--mut:#8b9bab;--line:#26323d;--btn:#e6edf3;--btnfg:#0e1419}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--fg);font-family:Georgia,"Times New Roman",serif;display:flex;flex-direction:column;padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px)}
+header{padding:16px 20px 4px}
+h1{font-size:1.25rem;margin:0 0 4px;font-weight:600}
+header p{margin:0;color:var(--mut);font-size:.9rem;max-width:62ch;line-height:1.45}
+#stage{flex:1;min-height:280px;position:relative;touch-action:pan-y}
+canvas{display:block;width:100%;height:100%}
+footer{display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding:12px 20px 16px;border-top:1px solid var(--line)}
+button{font:inherit;font-size:.9rem;padding:9px 16px;border-radius:6px;border:1px solid var(--btn);background:var(--btn);color:var(--btnfg);cursor:pointer}
+button.alt{background:transparent;color:var(--fg);border-color:var(--line)}
+button:disabled{opacity:.45;cursor:default}
+button:focus-visible{outline:2px solid #3b82f6;outline-offset:2px}
+#st{color:var(--mut);font-size:.9rem;flex:1;min-width:200px}
+</style>
+</head>
+<body>
+<header>
+<h1>Detection lab network</h1>
+<p>An attacker, a target that logs everything, and a SIEM that raises the alert. Drag to rotate. This is an illustrative simulation, not live data.</p>
+</header>
+<div id="stage"></div>
+<footer>
+<button id="run">Run SSH brute-force attack</button>
+<button id="reset" class="alt">Reset</button>
+<span id="st" role="status">Idle. The Ubuntu server forwards routine logs to Wazuh.</span>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+var stage=document.getElementById('stage'),st=document.getElementById('st'),runB=document.getElementById('run');
+if(!window.THREE){stage.textContent='3D view could not load.';return;}
+var dark=matchMedia('(prefers-color-scheme:dark)').matches;
+var txt=dark?'#e6edf3':'#14202b';
+var C={ok:0x3b82f6,bad:0xe5484d,warn:0xf5a524,good:0x30a46c,idle:0x64748b};
+var renderer=new THREE.WebGLRenderer({antialias:true,alpha:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+stage.appendChild(renderer.domElement);
+var scene=new THREE.Scene(),cam=new THREE.PerspectiveCamera(40,1,0.1,100);
+cam.position.set(0,7,12);cam.lookAt(0,0,0);
+scene.add(new THREE.AmbientLight(0xffffff,0.75));
+var dl=new THREE.DirectionalLight(0xffffff,0.8);dl.position.set(4,8,6);scene.add(dl);
+var g=new THREE.Group();scene.add(g);
+var floor=new THREE.GridHelper(16,16,0x64748b,0x64748b);floor.position.y=-0.7;
+floor.material.opacity=0.25;floor.material.transparent=true;g.add(floor);
+
+function label(t){
+  var c=document.createElement('canvas');c.width=256;c.height=64;var x=c.getContext('2d');
+  x.font='600 28px Georgia,serif';x.fillStyle=txt;x.textAlign='center';x.fillText(t,128,40);
+  var s=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(c),transparent:true}));
+  s.scale.set(3,0.75,1);return s;
+}
+function node(name,geo,x,z){
+  var m=new THREE.MeshStandardMaterial({color:C.ok,roughness:0.45,metalness:0.2,emissive:0x000000});
+  var mesh=new THREE.Mesh(geo,m);mesh.position.set(x,0,z);g.add(mesh);
+  var l=label(name);l.position.set(x,1.3,z);g.add(l);
+  return {mesh:mesh,mat:m,pos:new THREE.Vector3(x,0,z)};
+}
+var kali=node('Kali (attacker)',new THREE.BoxGeometry(1.3,1,1.3),-5,0);
+var sw=node('Virtual switch',new THREE.BoxGeometry(1.8,0.35,1),-1.6,0);
+var ub=node('Ubuntu SSH target',new THREE.BoxGeometry(1.2,1.4,1.2),2,2.2);
+var wz=node('Wazuh',new THREE.CylinderGeometry(0.7,0.7,1.2,24),2,-2.2);
+var an=node('Analyst',new THREE.SphereGeometry(0.65,24,16),5.6,-2.2);
+kali.mat.color.setHex(C.idle);an.mat.color.setHex(C.idle);
+[[kali,sw],[sw,ub],[ub,wz],[wz,an]].forEach(function(p){
+  var gm=new THREE.BufferGeometry().setFromPoints([p[0].pos,p[1].pos]);
+  g.add(new THREE.Line(gm,new THREE.LineBasicMaterial({color:0x64748b})));
+});
+
+var packets=[],timers=[];
+function send(path,color,speed,cb){
+  var m=new THREE.Mesh(new THREE.SphereGeometry(0.14,12,8),new THREE.MeshBasicMaterial({color:color}));
+  m.position.copy(path[0]);g.add(m);
+  packets.push({m:m,path:path,i:0,t:0,sp:speed,cb:cb});
+}
+function setN(n,col,glow){n.mat.color.setHex(col);n.mat.emissive.setHex(glow?col:0x000000);n.mat.emissiveIntensity=glow?0.5:0;}
+function say(s){st.textContent=s;}
+function later(fn,ms){timers.push(setTimeout(fn,ms));}
+
+function reset(){
+  timers.forEach(clearTimeout);timers=[];
+  packets.forEach(function(p){g.remove(p.m);});packets=[];
+  setN(kali,C.idle);setN(sw,C.ok);setN(ub,C.ok);setN(wz,C.ok);setN(an,C.idle);
+  runB.disabled=false;say('Idle. The Ubuntu server forwards routine logs to Wazuh.');
+}
+function run(){
+  reset();runB.disabled=true;
+  setN(kali,C.bad,true);say('Kali sends repeated SSH login attempts to the Ubuntu server.');
+  var N=8;
+  for(var i=0;i<N;i++){(function(i){later(function(){
+    send([kali.pos,sw.pos,ub.pos],C.bad,5,function(){
+      setN(ub,C.warn,true);later(function(){if(!wz.alert)setN(ub,C.ok);},180);
+      send([ub.pos,wz.pos],C.warn,5);
+    });
+    if(i===2)say('Failed password entries pile up in auth.log and stream to Wazuh.');
+    if(i===N-1)say('A final attempt succeeds. Accepted password from the same source.');
+  },i*420);})(i);}
+  later(function(){
+    wz.alert=true;setN(wz,C.bad,true);setN(ub,C.bad,true);
+    say('Wazuh rule fires: repeated failures then success from one IP (MITRE ATT&CK T1110).');
+    send([wz.pos,an.pos],C.bad,4,function(){setN(an,C.good,true);});
+  },4300);
+  later(function(){say('Analyst triages: validate, scope, enrich, classify, escalate to Tier 2.');runB.disabled=false;wz.alert=false;},6200);
+}
+runB.onclick=run;document.getElementById('reset').onclick=function(){wz.alert=false;reset();};
+
+var drag=false,lx=0,rot=0,auto=true;
+var el=renderer.domElement;
+el.addEventListener('pointerdown',function(e){drag=true;lx=e.clientX;auto=false;});
+addEventListener('pointerup',function(){drag=false;});
+addEventListener('pointermove',function(e){if(drag){rot+=(e.clientX-lx)*0.008;lx=e.clientX;}});
+var reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+function size(){var w=stage.clientWidth,h=stage.clientHeight;renderer.setSize(w,h);cam.aspect=w/h;
+  cam.position.set(0,w<600?9:7,w<600?17:12);cam.lookAt(0,0,0);cam.updateProjectionMatrix();}
+addEventListener('resize',size);size();
+var last=performance.now();
+function tick(now){
+  var dt=Math.min((now-last)/1000,0.05);last=now;
+  if(auto&&!reduce)rot+=dt*0.12;
+  g.rotation.y=Math.sin(rot)*0.5;
+  for(var k=packets.length-1;k>=0;k--){
+    var p=packets[k],a=p.path[p.i],b=p.path[p.i+1],len=a.distanceTo(b);
+    p.t+=p.sp*dt/len;
+    if(p.t>=1){p.i++;p.t=0;
+      if(p.i>=p.path.length-1){g.remove(p.m);packets.splice(k,1);if(p.cb)p.cb();continue;}
+      a=p.path[p.i];b=p.path[p.i+1];}
+    p.m.position.lerpVectors(a,b,p.t);
+  }
+  renderer.render(scene,cam);requestAnimationFrame(tick);
+}
+requestAnimationFrame(tick);
+})();
+</script>
+</body>
+</html>
