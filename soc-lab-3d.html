@@ -4,45 +4,38 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>SOC detection lab (3D)</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#f3f5f7;--fg:#14202b;--mut:#5b6b78;--line:#c9d3db;--btn:#14202b;--btnfg:#fff}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1419;--fg:#e6edf3;--mut:#8b9bab;--line:#26323d;--btn:#e6edf3;--btnfg:#0e1419}}
-:root[data-theme="dark"]{--bg:#0e1419;--fg:#e6edf3;--mut:#8b9bab;--line:#26323d;--btn:#e6edf3;--btnfg:#0e1419}
+:root{--fg:#e6eeff;--mut:#8aa3d1;--line:#16306a;--btn:#38c8ff;--btnfg:#04121f;color-scheme:dark}
 *{box-sizing:border-box}
 html,body{height:100%;margin:0}
-body{background:var(--bg);color:var(--fg);font-family:Georgia,"Times New Roman",serif;display:flex;flex-direction:column;padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px)}
-header{padding:16px 20px 4px}
-h1{font-size:1.25rem;margin:0 0 4px;font-weight:600}
-header p{margin:0;color:var(--mut);font-size:.9rem;max-width:62ch;line-height:1.45}
+body{background:transparent;color:var(--fg);font-family:"IBM Plex Sans",system-ui,sans-serif;display:flex;flex-direction:column;padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px)}
 #stage{flex:1;min-height:280px;position:relative;touch-action:pan-y}
 canvas{display:block;width:100%;height:100%}
-footer{display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding:12px 20px 16px;border-top:1px solid var(--line)}
-button{font:inherit;font-size:.9rem;padding:9px 16px;border-radius:6px;border:1px solid var(--btn);background:var(--btn);color:var(--btnfg);cursor:pointer}
+footer{display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding:12px 4px 4px;border-top:1px solid var(--line)}
+button{font:inherit;font-size:.9rem;font-weight:600;padding:9px 16px;border-radius:4px;border:1px solid var(--btn);background:var(--btn);color:var(--btnfg);cursor:pointer}
 button.alt{background:transparent;color:var(--fg);border-color:var(--line)}
 button:disabled{opacity:.45;cursor:default}
 button:focus-visible{outline:2px solid #3b82f6;outline-offset:2px}
+.lg{width:100%;display:flex;gap:16px;flex-wrap:wrap;color:var(--mut);font-size:.82rem}.lg i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px}
 #st{color:var(--mut);font-size:.9rem;flex:1;min-width:200px}
 </style>
 </head>
 <body>
-<header>
-<h1>Detection lab network</h1>
-<p>An attacker, a target that logs everything, and a SIEM that raises the alert. Drag to rotate. This is an illustrative simulation, not live data.</p>
-</header>
 <div id="stage"></div>
 <footer>
 <button id="run">Run SSH brute-force attack</button>
 <button id="reset" class="alt">Reset</button>
 <span id="st" role="status">Idle. The Ubuntu server forwards routine logs to Wazuh.</span>
+<div class="lg"><span><i style="background:#38c8ff"></i>Normal</span><span><i style="background:#ff5c6c"></i>Attack traffic and alerts</span><span><i style="background:#f5b041"></i>Log events</span></div>
 </footer>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 (function(){
 var stage=document.getElementById('stage'),st=document.getElementById('st'),runB=document.getElementById('run');
 if(!window.THREE){stage.textContent='3D view could not load.';return;}
-var dark=matchMedia('(prefers-color-scheme:dark)').matches;
-var txt=dark?'#e6edf3':'#14202b';
-var C={ok:0x3b82f6,bad:0xe5484d,warn:0xf5a524,good:0x30a46c,idle:0x64748b};
+var txt='#e6eeff';
+var C={ok:0x38c8ff,bad:0xff5c6c,warn:0xf5b041,good:0x35e0a1,idle:0x64748b};
 var renderer=new THREE.WebGLRenderer({antialias:true,alpha:true});
 renderer.setPixelRatio(Math.min(devicePixelRatio,2));
 stage.appendChild(renderer.domElement);
