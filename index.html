@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mansi Borade | Cyber Security Analyst</title>
+<meta name="description" content="MSc Cyber Security graduate building detection, incident response and ML-based security projects. Based in London.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#040a1c; --bg2:#071230; --surface:#0a1738; --ink:#e6eeff; --muted:#8aa3d1;
+  --line:#16306a; --signal:#38c8ff; --signal-soft:#0c2a55; --amber:#f5b041; --crit:#ff5c6c; --ok:#35e0a1;
+  --glow:rgba(56,200,255,.35);
+  --log-bg:#030816; --log-ink:#c7d8f5;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;color:var(--ink);font:400 1.02rem/1.65 "IBM Plex Sans",system-ui,sans-serif;
+  background:
+   radial-gradient(900px 500px at 85% -5%,rgba(56,200,255,.16),transparent 60%),
+   radial-gradient(700px 500px at -5% 25%,rgba(36,71,224,.22),transparent 60%),
+   linear-gradient(rgba(56,120,255,.07) 1px,transparent 1px),
+   linear-gradient(90deg,rgba(56,120,255,.07) 1px,transparent 1px),
+   linear-gradient(180deg,var(--bg2),var(--bg) 70%);
+  background-size:auto,auto,48px 48px,48px 48px,auto;background-attachment:fixed}
+h1,h2,h3{font-family:"IBM Plex Sans",sans-serif;line-height:1.15;margin:0;font-weight:600}
+a{color:var(--signal)}
+a:focus-visible,button:focus-visible{outline:3px solid var(--amber);outline-offset:3px}
+.wrap{max-width:1040px;margin:0 auto;padding:0 24px}
+.statusbar{border-bottom:1px solid var(--line);background:var(--surface);font:500 .8rem "IBM Plex Mono",monospace;color:var(--muted)}
+.statusbar .wrap{display:flex;gap:24px;padding-top:8px;padding-bottom:8px;flex-wrap:wrap}
+.statusbar .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--ok);margin-right:8px}
+header.nav{padding:18px 0}
+.nav .wrap{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.brand{font:600 1.1rem "IBM Plex Mono",monospace;color:var(--ink);text-decoration:none}
+.brand::before{content:"> ";color:var(--signal)}
+.nav ul{display:flex;gap:22px;list-style:none;margin:0;padding:0}
+.nav ul a{color:var(--muted);text-decoration:none;font-weight:500}
+.nav ul a:hover{color:var(--signal)}
+
+.hero{padding:48px 0 72px}
+.hero .wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:44px;align-items:center}
+.hero h1{font-size:clamp(2.3rem,5.4vw,4rem);font-weight:700;letter-spacing:-.02em}
+.hero p.lead{font-size:1.15rem;color:var(--muted);max-width:34em;margin:22px 0 28px}
+.btns{display:flex;gap:12px;flex-wrap:wrap}
+.btn{display:inline-block;padding:11px 20px;border-radius:4px;font-weight:600;text-decoration:none;border:1.5px solid var(--signal)}
+.btn.primary{background:var(--signal);color:#04121f}
+.btn.ghost{color:var(--signal)}
+.btn.primary:hover{filter:brightness(1.1)}
+.btn.ghost:hover{background:var(--signal-soft)}
+
+.log{background:var(--log-bg);color:var(--log-ink);border:1px solid var(--line);border-radius:8px;overflow:hidden;font:400 .78rem/1.75 "IBM Plex Mono",ui-monospace,monospace}
+.log .bar{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:10px 16px;border-bottom:1px solid var(--line);background:#0d1626;color:#8fa1bb}
+.log .sev{background:var(--crit);color:#1a0505;font-weight:600;padding:1px 10px;border-radius:3px;font-size:.72rem}
+.log .body{padding:14px 16px;overflow-x:auto}
+.log .row{white-space:nowrap;opacity:0;animation:in .4s forwards}
+.log .t{color:#5f7392;margin-right:10px}
+.log .bad{color:#ff9d8a}
+.log .hit{color:#ffd37a;margin-top:10px;white-space:normal;border-top:1px solid var(--line);padding-top:10px}
+.log .row:nth-child(2){animation-delay:.2s}.log .row:nth-child(3){animation-delay:.5s}
+.log .row:nth-child(4){animation-delay:.8s}.log .row:nth-child(5){animation-delay:1.1s}
+.log .row:nth-child(6){animation-delay:1.5s}
+@keyframes in{to{opacity:1}}
+@media (prefers-reduced-motion:reduce){.log .row{animation:none;opacity:1}html{scroll-behavior:auto}}
+
+section{padding:60px 0;border-top:1px solid var(--line)}
+section h2{font-size:clamp(1.6rem,3vw,2.1rem);margin-bottom:12px}
+section h2::before{content:"// ";color:var(--signal);font-family:"IBM Plex Mono",monospace;font-weight:500}
+.sub{color:var(--muted);max-width:40em;margin:0 0 32px}
+.about{display:grid;grid-template-columns:1.3fr 1fr;gap:48px}
+.about p{margin:0 0 16px;max-width:38em}
+.portrait{width:100%;max-width:300px;aspect-ratio:4/5;object-fit:cover;object-position:center 20%;border-radius:8px;border:1px solid var(--line);display:block;margin-bottom:18px}
+.about>aside{display:block}
+.facts{list-style:none;margin:0;padding:18px 22px;background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--signal);border-radius:6px}
+.facts li{margin-bottom:14px}.facts li:last-child{margin-bottom:0}
+.facts b{display:block;font-weight:600}
+.facts span{color:var(--muted);font-size:.93rem}
+
+
+.netbox{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:18px;overflow-x:auto}
+.netbox svg{display:block;min-width:640px;width:100%;height:auto}
+.net-edge{stroke:var(--line);stroke-width:2}
+.net-edge.hot{stroke:var(--crit)}
+.net-node rect{fill:var(--bg);stroke:var(--line);stroke-width:1.5}
+.net-node text{fill:var(--ink);font:600 13px "IBM Plex Sans",sans-serif;text-anchor:middle}
+.net-node .s{fill:var(--muted);font:400 10.5px "IBM Plex Mono",monospace}
+.net-node.atk rect{stroke:var(--crit)}
+.net-node.tgt.hot rect{stroke:var(--amber)}
+.net-node.siem.alert rect{stroke:var(--crit);stroke-width:2.5}
+.pk.ok{fill:var(--signal)}.pk.bad{fill:var(--crit)}.pk.warn{fill:var(--amber)}.pk.alert{fill:var(--crit)}
+.net-ctl{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-top:14px}
+.net-ctl button{font:600 .95rem "IBM Plex Sans",sans-serif;padding:10px 18px;border-radius:4px;border:1.5px solid var(--signal);background:var(--signal);color:#04121f;cursor:pointer}
+.net-ctl button.alt{background:transparent;color:var(--signal)}
+.net-stat{font:400 .85rem "IBM Plex Mono",monospace;color:var(--muted);flex:1;min-width:240px}
+.legend{display:flex;gap:18px;flex-wrap:wrap;margin-top:12px;font-size:.85rem;color:var(--muted)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px}
+.llm details{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:12px 18px;margin-bottom:10px}
+.llm summary{cursor:pointer;font-weight:600;list-style-position:inside}
+.llm summary span{font:500 .8rem "IBM Plex Mono",monospace;color:var(--signal);margin-right:10px}
+.llm details p{margin:10px 0 0;color:var(--muted);max-width:46em}
+.llm details p b{color:var(--ink)}
+.soc{border-left:3px solid var(--signal);padding:4px 0 4px 20px;margin-top:28px;max-width:46em}
+.soc h3{font-size:1.15rem;margin-bottom:8px}
+.soc p{margin:0;color:var(--muted)}
+.projects{display:grid;gap:18px}
+.proj{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:24px 26px;display:grid;grid-template-columns:1fr auto;gap:8px 24px}
+.proj:hover{border-color:var(--signal)}
+.proj h3{font-size:1.3rem}
+.proj p{margin:8px 0 0;grid-column:1/2;max-width:44em;color:var(--muted)}
+.proj .meta{grid-column:1/2;color:var(--signal);font:400 .8rem "IBM Plex Mono",monospace;margin-top:10px}
+.status{align-self:start;font:500 .76rem "IBM Plex Mono",monospace;padding:3px 11px;border-radius:3px;white-space:nowrap;border:1px solid}
+.status.done{color:var(--ok);border-color:var(--ok)}
+.status.wip{color:var(--amber);border-color:var(--amber)}
+.proj .link{grid-column:2;grid-row:2;align-self:end;font-weight:600}
+
+.next{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;list-style:none;padding:0;margin:0}
+.next li{border:1px dashed var(--line);border-radius:6px;padding:14px 16px;color:var(--muted);font-size:.93rem}
+.next b{display:block;color:var(--ink);margin-bottom:4px}
+
+.jobs{list-style:none;margin:0;padding:0}
+.jobs li{display:grid;grid-template-columns:190px 1fr;gap:6px 28px;padding:20px 0;border-bottom:1px solid var(--line)}
+.jobs .when{color:var(--muted);font:400 .85rem "IBM Plex Mono",monospace}
+.jobs h3{font-size:1.1rem}
+.jobs p{margin:6px 0 0;color:var(--muted);max-width:44em}
+
+.skills{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px}
+.skills>div{background:var(--surface);border:1px solid var(--line);border-top:2px solid var(--signal);border-radius:6px;padding:18px 20px}
+.skills h3{font-size:1.05rem;margin-bottom:8px}
+.skills p{margin:0;color:var(--muted);font-size:.95rem}
+
+.contact{font-size:1.15rem}
+footer{padding:28px 0 44px;color:var(--muted);font:400 .82rem "IBM Plex Mono",monospace;border-top:1px solid var(--line)}
+
+
+.statusbar{background:rgba(7,18,48,.85);backdrop-filter:blur(6px)}
+.hero h1{text-shadow:0 0 40px rgba(56,200,255,.18)}
+.btn.primary{box-shadow:0 0 18px var(--glow)}
+.btn.primary:hover{box-shadow:0 0 28px var(--glow)}
+.log{box-shadow:0 0 0 1px rgba(56,200,255,.18),0 12px 40px rgba(0,0,0,.45)}
+.log .bar{background:#07122b}
+.proj,.facts,.skills>div,.netbox,.llm details{background:linear-gradient(180deg,rgba(14,32,76,.72),rgba(8,20,50,.82));box-shadow:inset 0 1px 0 rgba(120,170,255,.08)}
+.proj:hover,.skills>div:hover{border-color:var(--signal);box-shadow:0 0 22px rgba(56,200,255,.15)}
+.portrait{box-shadow:0 0 0 1px var(--line),0 0 28px rgba(56,200,255,.18)}
+.net-node rect{fill:#071230}
+.brand::before{animation:blink 1.2s steps(2) infinite}
+@keyframes blink{50%{opacity:0}}
+@media (prefers-reduced-motion:reduce){.brand::before{animation:none}}
+@media (max-width:760px){
+  .hero .wrap,.about{grid-template-columns:1fr}
+  .proj{grid-template-columns:1fr}
+  .proj .link{grid-column:1;grid-row:auto}
+  .jobs li{grid-template-columns:1fr}
+}
+
+.hero{position:relative;overflow:hidden}
+#hero3d{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;opacity:.9}
+.hero .wrap{position:relative;z-index:1}
+.stats{display:flex;gap:28px;flex-wrap:wrap;list-style:none;margin:30px 0 0;padding:18px 0 0;border-top:1px solid var(--line);color:var(--muted);font-size:.88rem}
+.stats b{display:block;color:var(--ink);font:600 1.5rem "IBM Plex Mono",monospace}
+.proj{transition:transform .15s ease-out,border-color .2s,box-shadow .2s;will-change:transform}
+@media (prefers-reduced-motion:reduce){.proj{transition:none}}
+.tblwrap{overflow-x:auto;border:1px solid var(--line);border-radius:8px;background:linear-gradient(180deg,rgba(14,32,76,.72),rgba(8,20,50,.82))}
+.tbl{width:100%;border-collapse:collapse;font-size:.95rem;min-width:620px}
+.tbl th,.tbl td{text-align:left;padding:12px 16px;border-bottom:1px solid var(--line);vertical-align:top}
+.tbl tr:last-child td{border-bottom:0}
+.tbl th{color:var(--muted);font:500 .8rem "IBM Plex Mono",monospace}
+.tbl td:first-child{font-weight:600;white-space:nowrap}
+.tbl td:last-child{color:var(--muted)}
+.status.next{color:var(--muted);border-color:var(--line)}
+</style>
+</head>
+<body>
+<div class="statusbar"><div class="wrap"><span><span class="dot"></span>Open to SOC analyst roles</span><span>London, UK</span></div></div>
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="#top">Mansi Borade</a>
+    <nav aria-label="Main"><ul><li><a href="#projects">Projects</a></li><li><a href="#lab">Lab</a></li><li><a href="#soc">SOC map</a></li><li><a href="#proof">Proof</a></li><li><a href="#experience">Experience</a></li><li><a href="#ai">AI security</a></li><li><a href="#about">About</a></li><li><a href="#contact">Contact</a></li></ul></nav>
+  </div>
+</header>
+
+<main id="top">
+<div class="hero"><canvas id="hero3d" aria-hidden="true"></canvas><div class="wrap">
+  <div>
+    <h1>I find the attack in the logs.</h1>
+    <p class="lead">MSc Cyber Security graduate in London. I build detection labs, investigate incidents and train machine-learning models that identify malicious network traffic. I also test how AI systems can be attacked, and how to defend them.</p>
+    <div class="btns">
+      <a class="btn primary" href="#projects">See my projects</a>
+      <a class="btn ghost" href="https://www.linkedin.com/in/mansiborade">LinkedIn</a>
+      <a class="btn ghost" href="https://github.com/Borade-Mansi">GitHub</a>
+    </div>
+    <ul class="stats" aria-label="Proof of work in numbers"><li><b>#277</b>HackerDNA global rank</li><li><b>3</b>root flags</li><li><b>12</b>labs completed</li><li><b>3</b>datasets for my IDS</li></ul>
+  </div>
+  <div class="log" role="img" aria-label="Illustrative SSH brute-force log excerpt followed by a detection alert">
+    <div class="bar"><span>Illustrative alert: SSH brute force</span><span class="sev">HIGH</span></div><div class="body">
+    <div class="row"><span class="t">09:14:02</span>sshd: Failed password for root from 10.0.0.5</div>
+    <div class="row"><span class="t">09:14:04</span>sshd: Failed password for admin from 10.0.0.5</div>
+    <div class="row"><span class="t">09:14:05</span>sshd: Failed password for ubuntu from 10.0.0.5</div>
+    <div class="row"><span class="t">09:14:07</span>sshd: Failed password for test from 10.0.0.5</div>
+    <div class="row bad"><span class="t">09:14:09</span>sshd: Accepted password for ubuntu from 10.0.0.5</div>
+    <div class="row hit">Alert: repeated failures then a success from one source IP. Investigate.</div>
+  </div></div>
+</div></div>
+
+<section id="projects"><div class="wrap">
+  <h2>Projects</h2>
+  <p class="sub">What I built, the tools I used and where each one stands.</p>
+  <div class="projects">
+    <article class="proj">
+      <h3>Hybrid intrusion detection system</h3><span class="status done">Completed</span>
+      <p>My MSc dissertation. I designed and built a Python intrusion detection system that fuses a Random Forest (traffic features) with an LSTM (attack sequences over time) into combined alerts. I benchmarked it against Random Forest only, LSTM only, Isolation Forest and SVM baselines, validated it across three datasets and measured real-time latency.</p>
+      <div class="meta">Python, Scikit-learn, TensorFlow/Keras, FastAPI, Docker. Datasets: NSL-KDD, CICIDS2017, UNSW-NB15.</div>
+      <a class="link" href="https://github.com/Borade-Mansi">View on GitHub</a>
+    </article>
+    <article class="proj">
+      <h3>SOC detection lab</h3><span class="status wip">In progress</span>
+      <p>A home lab where a Kali machine attacks an Ubuntu SSH target. I collect the authentication logs as evidence, raise a Wazuh alert on the attack and write up the full investigation.</p>
+      <div class="meta">Kali Linux, Ubuntu, Wazuh, auth.log analysis.</div>
+      <a class="link" href="https://github.com/Borade-Mansi/SOC-Lab">View on GitHub</a>
+    </article>
+    <article class="proj">
+      <h3>Encrypted TCP chat application</h3><span class="status done">Completed</span>
+      <p>I built a multi-threaded client and server chat application that encrypts every message with AES-256-CBC, and integration-tested it during my Syntecxhub internship.</p>
+      <div class="meta">Python, sockets, threading, cryptography.</div>
+      <a class="link" href="https://github.com/Borade-Mansi">View on GitHub</a>
+    </article>
+    <article class="proj">
+      <h3>Secure IoT data pipeline</h3><span class="status done">Completed</span>
+      <p>I secured an MQTT sensor pipeline with TLS and X.509 device certificates, simulated replay attacks, benchmarked TLS performance and built a Streamlit monitoring dashboard during my Hydroficient externship.</p>
+      <div class="meta">Python, MQTT, TLS, X.509, Streamlit.</div>
+    </article>
+    <article class="proj">
+      <h3>Incident response plan: S10 Media</h3><span class="status done">Coursework</span>
+      <p>I wrote a complete incident response plan for a fictitious media company, built on SANS and NIST CSF guidance.</p>
+    </article>
+    <article class="proj">
+      <h3>Cryptanalysis and 7-bit PDU encoder</h3><span class="status done">Coursework</span>
+      <p>I broke a monoalphabetic substitution cipher in CrypTool 2 using dictionary and genetic-algorithm analysis, recovering the key and the full plaintext. I then wrote a Python encoder for 7-bit PDU (the packing used in SMS) and tested it on three messages, with binary and hex output.</p>
+      <div class="meta">Python, CrypTool 2, frequency analysis.</div>
+    </article>
+    <article class="proj">
+      <h3>NLP and language-model experiments</h3><span class="status done">Completed</span>
+      <p>I fine-tuned transformers with LoRA/PEFT, built semantic search with dense embeddings and trained BERT/RoBERTa text classifiers.</p>
+      <div class="meta">PyTorch, Hugging Face Transformers, spaCy.</div>
+      <a class="link" href="https://github.com/Borade-Mansi">View on GitHub</a>
+    </article>
+  </div>
+
+  <h3 style="margin:48px 0 14px;font-size:1.3rem">Coming next</h3>
+  <ul class="next">
+    <li><b>Phishing investigation</b>Header and IOC extraction with a written report.</li>
+    <li><b>IR playbook</b>NIST-based playbook and tabletop exercise.</li>
+    <li><b>Cloud and IAM assessment</b>Over-permissioned roles and public buckets.</li>
+    <li><b>Vulnerability report</b>Nmap scan with a risk-ranked fix plan.</li>
+    <li><b>Threat intelligence report</b>A finished OSINT report on one threat: Diamond Model, kill chain, ATT&amp;CK mapping, confidence levels and TLP marking.</li>
+    <li><b>ARP spoofing detection</b>Spot ARP poisoning in the lab with Wireshark and Wazuh, then show the fixes: dynamic ARP inspection, static entries, encrypted protocols.</li>
+    <li><b>Honeypot lab</b>A low-interaction honeypot and honeytokens that send alerts to Wazuh.</li>
+    <li><b>AI security lab</b>Local LLM (Ollama and Open WebUI) attacked with prompt injection, mapped to the OWASP LLM Top 10, with defensive guardrails.</li>
+  </ul>
+</div></section>
+<section id="lab"><div class="wrap">
+  <h2>Detection lab network</h2>
+  <p class="sub">The design of my SOC lab: an attacker, a target that logs everything, and a SIEM that raises the alert. Run the attack to see how the evidence flows. This is an illustrative simulation, not live data.</p>
+  <div class="netbox">
+    <svg id="net" viewBox="0 0 780 340" role="img" aria-label="Network diagram: Kali attacker connects through a switch to an Ubuntu SSH target, which forwards logs to a Wazuh server that alerts an analyst">
+      <g id="edges"></g>
+      <g class="net-node atk"><rect x="30" y="140" width="130" height="60" rx="8"/><text x="95" y="167">Kali Linux</text><text class="s" x="95" y="184">attacker</text></g>
+      <g class="net-node"><rect x="225" y="140" width="130" height="60" rx="8"/><text x="290" y="167">Lab network</text><text class="s" x="290" y="184">virtual switch</text></g>
+      <g class="net-node tgt" id="n-ubu"><rect x="455" y="60" width="140" height="60" rx="8"/><text x="525" y="87">Ubuntu server</text><text class="s" x="525" y="104">SSH target + agent</text></g>
+      <g class="net-node siem" id="n-waz"><rect x="455" y="220" width="140" height="60" rx="8"/><text x="525" y="247">Wazuh</text><text class="s" x="525" y="264">log analysis, rules</text></g>
+      <g class="net-node"><rect x="640" y="220" width="115" height="60" rx="8"/><text x="697" y="247">Analyst</text><text class="s" x="697" y="264">triage, report</text></g>
+      <g id="pkts"></g>
+    </svg>
+    <div class="net-ctl">
+      <button id="run" type="button">Run SSH brute-force attack</button>
+      <button id="reset" type="button" class="alt">Reset</button>
+      <div class="net-stat" id="stat" aria-live="polite">Idle. The Ubuntu server forwards routine logs to Wazuh.</div>
+    </div>
+    <div class="legend"><span><i style="background:var(--signal)"></i>Normal logs</span><span><i style="background:var(--crit)"></i>Attack traffic and alerts</span><span><i style="background:var(--amber)"></i>Suspicious log events</span></div>
+  </div>
+</div></section>
+<section id="soc"><div class="wrap">
+  <h2>SOC skills map</h2>
+  <p class="sub">I am aiming for a Tier 1 SOC Analyst role (monitoring and triage) and growing toward Tier 2 incident response. Here is the evidence behind each tier.</p>
+  <div class="skills">
+    <div><h3>Tier 1: Monitoring and triage</h3><p>SSH brute-force lab with a Wazuh alert, authentication log analysis and a written investigation. Lab practice on HackerDNA (ranked #277, 3 root flags).</p></div>
+    <div><h3>Tier 2: Incident response (growing)</h3><p>A full incident response plan for S10 Media built on SANS and NIST CSF. Next: an IR playbook and tabletop exercise.</p></div>
+    <div><h3>Tier 3: Detection and hunting (later)</h3><p>My hybrid Random Forest + LSTM intrusion detection system is the foundation. Next: ARP spoofing detection and a honeypot lab feeding Wazuh.</p></div>
+  </div>
+  <h3 style="margin:44px 0 14px;font-size:1.3rem">SOC skills checklist</h3>
+  <div class="tblwrap"><table class="tbl"><thead><tr><th>Skill</th><th>Status</th><th>Evidence</th></tr></thead><tbody><tr><td>Incident detection</td><td><span class="status done">Practised</span></td><td>Wazuh alert on an SSH brute-force attack in my SOC lab, and a hybrid Random Forest + LSTM detector tested on three datasets.</td></tr><tr><td>Threat intelligence</td><td><span class="status wip">Building</span></td><td>Red Canary threat intelligence and triage assessment on GitHub. A full OSINT report with the Diamond Model, ATT&amp;CK mapping and TLP marking is next.</td></tr><tr><td>Security tools</td><td><span class="status done">Practised</span></td><td>Wazuh, Kali Linux and Linux authentication logs in my lab. Next: Splunk or ELK.</td></tr><tr><td>Endpoint analysis</td><td><span class="status wip">Building</span></td><td>A Wazuh agent on the Ubuntu endpoint forwards its authentication logs for analysis.</td></tr><tr><td>Malware analysis</td><td><span class="status next">Next</span></td><td>Fundamentals first (operating systems, Python and C), then reverse-engineering tools.</td></tr><tr><td>Forensics</td><td><span class="status wip">Building</span></td><td>Collecting and preserving log evidence in my SOC lab investigation. Disk forensics tools are next.</td></tr><tr><td>Vulnerability assessment</td><td><span class="status done">Practised</span></td><td>Vulnerability analysis exercises during my Syntecxhub internship. Next: an Nmap scan with a risk-ranked fix plan.</td></tr><tr><td>Documentation</td><td><span class="status done">Practised</span></td><td>Written investigations, an incident response plan for S10 Media and a README for every project.</td></tr><tr><td>Scripting and automation</td><td><span class="status done">Practised</span></td><td>Python across my IDS, encrypted chat and PDU encoder, plus FastAPI and Docker. Next: Python enrichment of phishing indicators.</td></tr></tbody></table></div>
+  <h3 style="margin:44px 0 14px;font-size:1.3rem">How I triage an alert</h3>
+  <div class="log" role="group" aria-label="Illustrative alert triage ticket for the SSH brute-force scenario">
+    <div class="bar"><span>Illustrative triage ticket: SSH brute force then successful login</span><span class="sev">HIGH</span></div>
+    <div class="body">
+      <div><span class="t">1 Validate</span>Four failed SSH logins in 5 seconds, then a success from the same source. The usernames differ (root, admin, ubuntu, test), so this is not a user typo.</div>
+      <div><span class="t">2 Scope</span>Host: Ubuntu SSH target. Source: 10.0.0.5. Window: 09:14:02 to 09:14:09. Accounts tried: root, admin, ubuntu, test.</div>
+      <div><span class="t">3 Enrich</span>In my lab the source is the Kali machine. On a real network I would check IP reputation, geolocation and what else that source contacted.</div>
+      <div><span class="t">4 Classify</span>Brute force with a successful login (MITRE ATT&amp;CK T1110). High severity because the attacker got in.</div>
+      <div class="hit"><span class="t">5 Escalate</span>Escalate to Tier 2 with the evidence. Recommended actions: disable the compromised account, force a password reset, block the source IP, review activity after 09:14:09 and move SSH to key-based login.</div>
+    </div>
+  </div>
+</div></section>
+
+<section id="proof"><div class="wrap">
+  <h2>Proof of work</h2>
+  <p class="sub">Evidence over claims: ranked lab platforms, public code and written investigations.</p>
+  <div class="skills">
+    <div><h3>Lab platforms</h3><p>HackerDNA: ranked #277 globally, 12 labs completed, 3 root flags.</p></div>
+    <div><h3>Public code</h3><p>Every project is documented in its own GitHub repo with a README covering what, why, tools and lessons. <a href="https://github.com/Borade-Mansi">See GitHub</a>.</p></div>
+    <div><h3>Write-ups</h3><p>Each lab ends with a written investigation: evidence, timeline, findings and fixes. First up: the SOC-Lab SSH brute-force investigation.</p></div>
+  </div>
+  <h3 style="margin:44px 0 18px;font-size:1.3rem">Credentials</h3>
+  <div class="skills">
+    <div><h3>ISC2 CC course: Domains 1 and 2</h3><p>Completed the Certified in Cybersecurity course modules Security Principles, and Incident Response, Business Continuity and Disaster Recovery Concepts. Certificates issued January 2026.</p></div>
+    <div><h3>Certified Red Team Operations Management (CRTOM)</h3><p>Red Team Leaders, December 2025. Passed the exam. I use it to understand how attackers operate so I can detect them. <a href="https://courses.redteamleaders.com/exam-completion/5a197668dfd42332">Verify</a>.</p></div>
+    <div><h3>AIG Shields Up: Cybersecurity Job Simulation</h3><p>Forage, June 2025. Responded to a zero-day vulnerability and worked through bypassing ransomware.</p></div>
+    <div><h3>Tata Cybersecurity Analyst Job Simulation</h3><p>Forage, June 2025. IAM fundamentals, IAM strategy assessment, custom IAM solutions and platform integration.</p></div>
+    <div><h3>Deloitte Australia Cyber Job Simulation</h3><p>Practical security analysis tasks set in a consulting scenario.</p></div>
+  </div>
+</div></section>
+<section id="experience"><div class="wrap">
+  <h2>Experience</h2>
+  <ul class="jobs">
+    <li><div class="when">May 2026 to present</div><div><h3>Cybersecurity Intern, Syntecxhub</h3><p>Hands-on threat detection, vulnerability analysis, phishing detection and risk assessment through structured practical exercises, plus side projects on prompt-injection detection and log-based threat detection.</p></div></li>
+    <li><div class="when">Feb 2026 to May 2026</div><div><h3>Extern, Hydroficient</h3><p>Secured an IoT data pipeline, ran replay-attack simulations and documented the security findings.</p></div></li>
+    <li><div class="when">Dec 2022 to Aug 2024</div><div><h3>UI/UX Designer, PatientClick Inc.</h3><p>Designed high-fidelity interfaces and prototypes in collaboration with product managers, writers and developers.</p></div></li>
+    <li><div class="when">Apr 2020 to Nov 2020</div><div><h3>Web Developer, RM Infonetwork</h3><p>Built CRM software and web service integrations using PHP (Laravel, WordPress, CodeIgniter), MySQL and JavaScript.</p></div></li>
+    <li><div class="when">Aug 2019 to Mar 2020</div><div><h3>Software Developer, MobileERP Softech</h3><p>Built and customised ERP modules for sales, CRM, accounts, inventory and HR on MySQL.</p></div></li>
+  </ul>
+</div></section>
+<section id="ai"><div class="wrap llm">
+  <h2>AI security notes</h2>
+  <p class="sub">My study notes on securing applications built on large language models, based on the OWASP Top 10 for LLM Applications (2025 edition). I'm putting them into practice in my AI security lab.</p>
+    <details><summary><span>LLM01</span>Prompt injection</summary><p><b>Risk:</b> Crafted text, typed by a user or hidden in a document or web page, overrides the model's instructions.</p><p><b>Defence:</b> Keep system and user context separate, give the model least-privilege tools, filter inputs and outputs, require human approval for risky actions, and alert on repeated attempts.</p></details>
+    <details><summary><span>LLM02</span>Sensitive information disclosure</summary><p><b>Risk:</b> The model reveals personal data, secrets or proprietary data.</p><p><b>Defence:</b> Keep secrets out of training data and prompts, redact outputs, and enforce access controls on anything the model can retrieve.</p></details>
+    <details><summary><span>LLM03</span>Supply chain</summary><p><b>Risk:</b> A compromised model, dataset, plugin or library enters the application.</p><p><b>Defence:</b> Use trusted sources, verify hashes and signatures, pin versions and scan dependencies.</p></details>
+    <details><summary><span>LLM04</span>Data and model poisoning</summary><p><b>Risk:</b> Tampered training or fine-tuning data plants backdoors or bias.</p><p><b>Defence:</b> Vet and version data, record where it came from, and test model behaviour before release.</p></details>
+    <details><summary><span>LLM05</span>Improper output handling</summary><p><b>Risk:</b> Model output is passed to another system unchecked, leading to XSS, SQL injection or code execution.</p><p><b>Defence:</b> Treat model output as untrusted input: validate, encode and parameterise it.</p></details>
+    <details><summary><span>LLM06</span>Excessive agency</summary><p><b>Risk:</b> The model has too many tools, permissions or too much autonomy.</p><p><b>Defence:</b> Grant the minimum tools and permissions, and require approval for high-impact actions.</p></details>
+    <details><summary><span>LLM07</span>System prompt leakage</summary><p><b>Risk:</b> Hidden instructions, or secrets placed in them, are exposed.</p><p><b>Defence:</b> Never store secrets in prompts and enforce rules outside the model.</p></details>
+    <details><summary><span>LLM08</span>Vector and embedding weaknesses</summary><p><b>Risk:</b> A retrieval store (RAG) leaks data across users or is fed poisoned documents.</p><p><b>Defence:</b> Use permission-aware retrieval, validate ingested content and monitor the vector store.</p></details>
+    <details><summary><span>LLM09</span>Misinformation</summary><p><b>Risk:</b> The model gives confident but wrong answers that people act on.</p><p><b>Defence:</b> Ground answers in sources, show uncertainty and keep human review for important decisions.</p></details>
+    <details><summary><span>LLM10</span>Unbounded consumption</summary><p><b>Risk:</b> Huge or endless requests cause outages, large bills or model theft.</p><p><b>Defence:</b> Set rate limits, quotas and input size limits, and monitor usage.</p></details>
+  <div class="soc">
+    <h3>The SOC view</h3>
+    <p>Log every prompt and response and send them to the SIEM. Alert when one user repeatedly tries to override instructions, sends encoded payloads or submits unusually long inputs. Map what you find to MITRE ATLAS, and run threat modelling (STRIDE) before an AI feature ships.</p>
+  </div>
+</div></section>
+<section id="about"><div class="wrap about">
+  <div>
+    <h2>About</h2>
+    <p>I graduated with an MSc in Cyber Security from the University of the West of Scotland (London campus) in 2026. My dissertation produced a hybrid intrusion detection system that combines Random Forest and LSTM models, and my studies covered network penetration testing and applied cryptography.</p>
+    <p>I spent several years as a software developer, web developer and UI/UX designer, so I read code as well as logs. That background shows me how systems are built, how they fail and how attackers exploit them. I now focus on SOC and blue-team work: detection, triage, incident response and clear written reports.</p>
+  </div>
+  <aside>
+  <img class="portrait" src="profile.jpg" alt="Portrait of Mansi Borade" width="300" height="375">
+  <ul class="facts">
+    <li><b>MSc Cyber Security</b><span>University of the West of Scotland, 2026</span></li>
+    <li><b>BTech Computer Science (AI)</b><span>Parul University</span></li>
+    <li><b>Languages</b><span>English and Hindi</span></li>
+    <li><b>Location</b><span>London</span></li>
+  </ul>
+  </aside>
+</div></section>
+<section id="skills"><div class="wrap">
+  <h2>Skills</h2>
+  <p class="sub">The fundamentals every security role rests on, and where I have applied each one.</p>
+  <h3 style="margin:0 0 14px;font-size:1.3rem">Security fundamentals</h3>
+  <div class="skills">
+    <div><h3>CIA principles</h3><p>Confidentiality, integrity and availability, studied in the ISC2 Certified in Cybersecurity course (Domain 1, Security Principles) and applied when I secured an IoT data pipeline.</p></div>
+    <div><h3>Risk management</h3><p>Risk assessment exercises during my Syntecxhub internship, and a NIST CSF-based incident response plan for S10 Media.</p></div>
+    <div><h3>Cryptography</h3><p>Broke a substitution cipher in CrypTool 2, built a chat app with AES-256-CBC encryption, and used TLS with X.509 certificates on an MQTT pipeline.</p></div>
+    <div><h3>Network protocols</h3><p>SSH authentication analysed in my SOC lab, MQTT over TLS in my IoT project, and network penetration testing concepts from my MSc.</p></div>
+    <div><h3>Network security and architecture</h3><p>Designed the network for my SOC lab (attacker, virtual switch, SSH target with agent and a Wazuh server) and secured an MQTT pipeline with TLS and X.509 device certificates. Next: ARP spoofing detection with Wireshark and Wazuh.</p></div>
+  </div>
+  <h3 style="margin:44px 0 14px;font-size:1.3rem">Technical skills</h3>
+  <div class="skills" style="margin-top:0">
+    <div><h3>Detection and monitoring</h3><p>Log analysis, alert triage, authentication log analysis, SIEM and IDS concepts, Wazuh, phishing analysis and MITRE ATT&amp;CK mapping.</p></div>
+    <div><h3>Incident response and forensics</h3><p>Incident response lifecycle (NIST 800-61, SANS), evidence collection from logs, incident reporting, and zero-day and ransomware response scenarios.</p></div>
+    <div><h3>Threat intelligence, vulnerability and risk</h3><p>Threat intelligence and triage assessment, vulnerability assessment, risk assessment and the NIST CSF. OSINT reporting is in progress.</p></div>
+    <div><h3>Tools and platforms</h3><p>Wazuh, Kali Linux, Ubuntu and Linux, CrypTool 2, Docker, Git and GitHub, Streamlit, MQTT, and TLS with X.509 certificates.</p></div>
+    <div><h3>Scripting and automation</h3><p>Python, JavaScript, PHP, FastAPI and MySQL. I build tools that process logs, detect patterns and serve results through APIs.</p></div>
+    <div><h3>Machine learning</h3><p>Python, Scikit-learn, TensorFlow/Keras, PyTorch, Hugging Face Transformers, LoRA/PEFT and spaCy.</p></div>
+    <div><h3>AI security (learning)</h3><p>OWASP Top 10 for LLM Applications (2025), prompt injection and its defences, MITRE ATLAS, guardrails, prompt logging into a SIEM, and NIST AI RMF and EU AI Act basics.</p></div>
+    <div><h3>Offensive and identity knowledge</h3><p>Network penetration testing concepts, red team operations management (CRTOM), identity and access management (IAM) and applied cryptography.</p></div>
+    <div><h3>Documentation and communication</h3><p>Technical writing, written investigations, incident response plans, and UI/UX design and prototyping from my earlier career.</p></div>
+  </div>
+  <p class="sub" style="margin:22px 0 0">Learning next: Splunk or ELK, Wireshark, Nmap and malware analysis fundamentals.</p>
+</div>
+</section>
+<section id="contact"><div class="wrap">
+  <h2>Contact</h2>
+  <p class="contact">Email <a href="mailto:borademansiv@gmail.com">borademansiv@gmail.com</a><br>
+  <a href="https://www.linkedin.com/in/mansiborade">LinkedIn</a> and <a href="https://github.com/Borade-Mansi">GitHub</a></p>
+</div></section>
+</main>
+
+<footer><div class="wrap">Mansi Borade. London, UK.</div></footer>
+<script>
+(function(){
+var NS="http://www.w3.org/2000/svg",P={kali:[160,170],sw:[225,170],sw2:[355,170],ubu:[455,90],waz:[455,250],wazr:[595,250],ana:[640,250]};
+var E=[["kali","sw"],["sw2","ubu"],["ubu","waz"],["wazr","ana"]],edges=[];
+// edge 0 spans kali->switch->target: draw as two lines
+var lines=[[[160,170],[225,170]],[[355,170],[455,90]],[[525,120],[525,220]],[[595,250],[640,250]]];
+var eg=document.getElementById("edges"),pg=document.getElementById("pkts");
+lines.forEach(function(l){var e=document.createElementNS(NS,"line");e.setAttribute("x1",l[0][0]);e.setAttribute("y1",l[0][1]);e.setAttribute("x2",l[1][0]);e.setAttribute("y2",l[1][1]);e.setAttribute("class","net-edge");eg.appendChild(e);edges.push(e)});
+var kt=[[160,170],[225,170],[355,170],[455,90]];
+var routes={bad:kt,ok:[[525,120],[525,220]],alert:[[595,250],[640,250]]};
+var stat=document.getElementById("stat"),ubu=document.getElementById("n-ubu"),waz=document.getElementById("n-waz");
+var pk=[],attack=false,failed=0,alerted=false,last=0,sp1=0,sp2=0,reduce=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+function len(a,b){return Math.hypot(b[0]-a[0],b[1]-a[1])}
+function spawn(route,cls,cb){var c=document.createElementNS(NS,"circle");c.setAttribute("class","pk "+cls);c.setAttribute("r",cls=="alert"?7:5);pg.appendChild(c);var pts=routes[route],tot=0;for(var i=1;i<pts.length;i++)tot+=len(pts[i-1],pts[i]);pk.push({c:c,pts:pts,tot:tot,d:0,cb:cb})}
+function pos(p){var d=p.d;for(var i=1;i<p.pts.length;i++){var L=len(p.pts[i-1],p.pts[i]);if(d<=L){var t=d/L;return[p.pts[i-1][0]+(p.pts[i][0]-p.pts[i-1][0])*t,p.pts[i-1][1]+(p.pts[i][1]-p.pts[i-1][1])*t]}d-=L}return p.pts[p.pts.length-1]}
+function setText(){if(alerted)stat.textContent="High-severity alert in Wazuh: repeated failed SSH logins from one source. Analyst reviews the evidence.";else if(attack)stat.textContent="Kali is guessing SSH passwords. Failed logins logged: "+failed;else stat.textContent="Idle. The Ubuntu server forwards routine logs to Wazuh."}
+function finalState(){failed=12;alerted=true;edges[0].classList.add("hot");edges[1].classList.add("hot");ubu.classList.add("hot");waz.classList.add("alert");setText()}
+function frame(t){var dt=Math.min((t-last)/1000||0,.05);last=t;
+ pk=pk.filter(function(p){p.d+=dt*(p.c.getAttribute("class").indexOf("bad")>-1?260:140);if(p.d>=p.tot){p.c.remove();if(p.cb)p.cb();return false}var q=pos(p);p.c.setAttribute("cx",q[0]);p.c.setAttribute("cy",q[1]);return true});
+ sp1+=dt;sp2+=dt;
+ if(attack){if(sp1>.28){sp1=0;spawn("bad","bad",function(){failed++;setText()})}
+  if(sp2>.7){sp2=0;spawn("ok","warn")}
+  if(failed>=8&&!alerted){alerted=true;waz.classList.add("alert");spawn("alert","alert");setText()}}
+ else if(sp2>1.6){sp2=0;spawn("ok","ok")}
+ requestAnimationFrame(frame)}
+document.getElementById("run").onclick=function(){reset(true);attack=true;edges[0].classList.add("hot");edges[1].classList.add("hot");ubu.classList.add("hot");if(reduce)finalState();else setText()};
+function reset(keep){attack=false;alerted=false;failed=0;pk.forEach(function(p){p.c.remove()});pk=[];edges.forEach(function(e){e.classList.remove("hot")});ubu.classList.remove("hot");waz.classList.remove("alert");if(!keep)setText()}
+document.getElementById("reset").onclick=function(){reset(false)};
+if(!reduce)requestAnimationFrame(frame);
+})();
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+var cv=document.getElementById("hero3d");if(!cv||!window.THREE)return;
+var reduce=matchMedia("(prefers-reduced-motion: reduce)").matches,R;
+try{R=new THREE.WebGLRenderer({canvas:cv,alpha:true,antialias:true})}catch(e){return}
+R.setPixelRatio(Math.min(devicePixelRatio||1,2));
+var S=new THREE.Scene(),C=new THREE.PerspectiveCamera(55,1,.1,100);C.position.z=15;
+var G=new THREE.Group();S.add(G);
+var N=[],i,j,LINK=4.2;
+for(i=0;i<80;i++)N.push(new THREE.Vector3((Math.random()-.5)*26,(Math.random()-.5)*14,(Math.random()-.5)*10));
+var SIEM=N[0].set(5,-1,0);
+G.add(new THREE.Points(new THREE.BufferGeometry().setFromPoints(N),new THREE.PointsMaterial({color:0x38c8ff,size:.16,transparent:true,opacity:.85})));
+var L=[];for(i=0;i<N.length;i++)for(j=i+1;j<N.length;j++)if(N[i].distanceTo(N[j])<LINK)L.push(N[i],N[j]);
+G.add(new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(L),new THREE.LineBasicMaterial({color:0x2a6cff,transparent:true,opacity:.22})));
+function ball(c,r){var m=new THREE.Mesh(new THREE.SphereGeometry(r,16,16),new THREE.MeshBasicMaterial({color:c}));G.add(m);return m}
+var siem=ball(0xf5b041,.34);siem.position.copy(SIEM);
+var atk=ball(0xff5c6c,.3),pulse=ball(0xff5c6c,.2);atk.visible=pulse.visible=false;
+var ring=new THREE.Mesh(new THREE.RingGeometry(.4,.48,40),new THREE.MeshBasicMaterial({color:0xff5c6c,transparent:true,opacity:0,side:THREE.DoubleSide}));ring.position.copy(SIEM);G.add(ring);
+function route(a){var p=[a],cur=a,k,n,best,bd,d;for(k=0;k<14&&cur!==SIEM;k++){best=null;bd=cur.distanceTo(SIEM);for(n=0;n<N.length;n++)if(N[n]!==cur&&cur.distanceTo(N[n])<LINK){d=N[n].distanceTo(SIEM);if(d<bd){bd=d;best=N[n]}}if(!best)break;p.push(best);cur=best}if(cur!==SIEM)p.push(SIEM);return p}
+var path=null,seg=0,dist=0,wait=1.5,flash=0;
+function launch(){var far=N.filter(function(n){return n.x<-4}),a=far[Math.floor(Math.random()*far.length)]||N[1];atk.position.copy(a);atk.visible=pulse.visible=true;path=route(a);seg=0;dist=0}
+function size(){var w=cv.clientWidth,h=cv.clientHeight;if(!w||!h)return;R.setSize(w,h,false);C.aspect=w/h;C.updateProjectionMatrix();R.render(S,C)}
+addEventListener("resize",size);size();
+if(reduce){return}
+var mx=0,last=0;addEventListener("mousemove",function(e){mx=e.clientX/innerWidth-.5});
+function tick(t){var dt=Math.min((t-last)/1000||0,.05);last=t;
+ G.rotation.y+=(mx*.35-G.rotation.y)*.02+dt*.03;
+ if(path){var a=path[seg],b=path[seg+1],l=a.distanceTo(b);dist+=dt*7;if(dist>=l){seg++;dist=0;if(seg>=path.length-1){path=null;pulse.visible=false;flash=1;wait=4}}else pulse.position.lerpVectors(a,b,dist/l)}
+ else{wait-=dt;if(wait<=0&&!flash)launch()}
+ if(flash>0){flash-=dt*.8;ring.material.opacity=Math.max(flash,0);ring.scale.setScalar(1+(1-Math.max(flash,0))*6);ring.lookAt(C.position);if(flash<=0)atk.visible=false}
+ R.render(S,C);requestAnimationFrame(tick)}
+requestAnimationFrame(tick);
+})();
+(function(){
+if(matchMedia("(prefers-reduced-motion: reduce)").matches||!matchMedia("(hover:hover)").matches)return;
+document.querySelectorAll(".proj").forEach(function(c){
+ c.addEventListener("mousemove",function(e){var r=c.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;c.style.transform="perspective(900px) rotateX("+(-y*4)+"deg) rotateY("+(x*5)+"deg)"});
+ c.addEventListener("mouseleave",function(){c.style.transform=""})});
+})();
+</script>
+</body>
+</html>
